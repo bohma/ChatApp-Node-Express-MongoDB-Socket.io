@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Подключение Bootstrap чтобы все выглядело красиво -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <title>Chat</title>
+    <style>
+        body {
+            background: #fcfcfc;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Основная часть страницы -->
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Chat</h2>
+            <p class="lead">Enter your name</p>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <!-- Форма для получения сообщений и имени -->
+                <h3>Message Form</h3>
+                <form id="messForm" action="/" method="POST" name="messForm">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" placeholder="Введите имя" class="form-control">
+                    <br>
+                    <label for="email">Email</label>
+                    <input type="text" name="email" id="email" placeholder="Введите email" class="form-control"
+                        pattern="^[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}$">
+                    <br>
+                    <label for="text">Message</label>
+                    <input name="text" id="text" class="form-control" required placeholder="Введите сообщение"
+                        maxlength="100">
+                    <br>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <h3>Messages</h3>
+                <!-- Вывод всех сообщений будет здесь -->
+                <div id="all_mess"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Подключаем jQuery, а также Socket.io -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        // Функция для работы с данными на сайте
+        $(() => {
+            // Включаем socket.io и отслеживаем все подключения
+            const socket = io.connect();
+            // Делаем переменные на:
+            const $form = $("#messForm"); // Форму сообщений
+            const $id = $("#_id");
+            const $name = $("#name"); // Поле с именем
+            const $email = $("#email"); // Поле с email
+            const $text = $("#text"); // Текстовое поле
+            const $all_messages = $("#all_mess"); // Блок с сообщениями
+
+            // Отслеживаем нажатие на кнопку в форме сообщений
+            $form.submit((event) => {
+                // Предотвращаем классическое поведение формы
+                event.preventDefault();
+                // В сокет отсылаем новое событие 'send mess',
+                // в событие передаем различные параметры и данные
+                socket.emit('send mess', { name: $name.val(), email: $email.val(), text: $text.val() });
+                // Очищаем поле с сообщением
+                $text.val('');
+            });
+
+            // Здесь отслеживаем событие 'add mess', 
+            // которое должно приходить из сокета в случае добавления нового сообщения
+            socket.on('add mess', (data) => {
+                // Встраиваем полученное сообщение в блок с сообщениями
+                // У блока с сообщением будет тот класс, который соответвует пользователю что его отправил
+                let date = new Date()
+                let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                $all_messages.append("<div><b>" + "<div>" + data.name + " | " + data.email + " | " + time + "</b>" + "</div><div>" + data.text + "</div>");
+            });
+
+        });
+
+    </script>
+</body>
+
+</html>
