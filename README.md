@@ -1,1 +1,4 @@
-# ChatApp-Node-Express-MongoDB-Socket.io
+1.Запустить mongod.exe
+2.Для заупска в терминале проекта ввести - npm i
+3.Для заупска в терминале проекта ввести - node app.js 
+4.В адрессной строке - localhost:3000
