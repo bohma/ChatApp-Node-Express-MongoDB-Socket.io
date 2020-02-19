@@ -13,7 +13,6 @@ Node.js application - public chat room(only RESTful API).
 Unauthenticated users can post messages in chat so others can read them.
 Messages need to be saved to the database.
 
-Basic requirements:
 - Express, MongoDB
 - The message must contain author(unauthenticated user) email and text, create date and update date.
 - Email validation (regex to check if that is real email)
