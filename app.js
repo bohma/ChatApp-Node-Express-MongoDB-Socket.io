@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express();
 
@@ -13,15 +14,16 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 let db
 
-const mongoClient = new MongoClient("mongodb://localhost:27017/", { useUnifiedTopology: true });
+const mongoClient = new MongoClient(process.env.MONGODB_URI || 'mongodb://localhost:27017/', { useUnifiedTopology: true });
 
 //Запускаем сервер и подключаем базу данных
 app.use(express.static(__dirname))
 mongoClient.connect((err, client) => {
     if (err) return console.log(err);
     db = client;
-    app.locals.collection = client.db("testdb").collection("testcol");
-    server.listen(3000, () => {
+    //heroku_kz2s0r3b
+    app.locals.collection = client.db("heroku_0rk3bjmx").collection("testcol");
+    server.listen(process.env.PORT || 3000, () => {
         console.log("Сервер создан!");
     });
 });
